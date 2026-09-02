@@ -2,12 +2,13 @@ $location = "centralus"
 $group = "rg-aks-argocd"
 $cluster = "aksargocd"
 
-# register providers and install extension tooling
+# register providers and repair extension tooling
 az provider register -n Microsoft.Kubernetes --wait
 az provider register -n Microsoft.ContainerService --wait
 az provider register -n Microsoft.KubernetesConfiguration --wait
-az extension add -n k8s-configuration
-az extension add -n k8s-extension
+az extension remove -n connectedk8s
+az extension add -n k8s-configuration --upgrade
+az extension add -n k8s-extension --upgrade
 
 # create an AKS cluster with Azure CNI Overlay and Cilium
 az group create -n $group -l $location
@@ -31,11 +32,7 @@ az k8s-extension create -g $group -c $cluster -t managedClusters `
 kubectl apply -f ./application.yaml
 
 # expose the Argo CD UI and output its URL
-kubectl -n argocd expose service argocd-server `
-	--type LoadBalancer `
-	--name argocd-server-lb `
-	--port 80 `
-	--target-port 8080
+kubectl apply -f ./argocd-service.yaml
 
 kubectl -n argocd wait service/argocd-server-lb `
 	--for=jsonpath='{.status.loadBalancer.ingress[0].ip}' `
@@ -44,4 +41,4 @@ kubectl -n argocd wait service/argocd-server-lb `
 $argoIp = kubectl -n argocd get service argocd-server-lb `
 	-o jsonpath='{.status.loadBalancer.ingress[0].ip}'
     
-Write-Output "Argo CD UI: http://$argoIp"
+Write-Output "Argo CD UI: https://$argoIp"
