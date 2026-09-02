@@ -2,6 +2,8 @@
 
 Creates a four-node AKS cluster in Central US with Azure CNI Overlay, Cilium, and the managed Argo CD extension in Redis HA mode. Argo CD synchronizes the sample web workload from the `app` directory.
 
+For this demo, Argo CD polls Git every 10 seconds with no reconciliation jitter. The reconciliation interval controls how often Argo CD checks Git for changes. Jitter adds a random delay to that interval to spread requests from multiple applications; `0s` disables that delay. Use a longer interval, nonzero jitter, or webhooks for production to avoid unnecessary repository traffic.
+
 ## Run
 
 ```powershell

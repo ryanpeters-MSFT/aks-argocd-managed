@@ -22,11 +22,13 @@ az aks create -n $cluster -g $group -l $location `
     
 az aks get-credentials -n $cluster -g $group --overwrite-existing
 
-# install managed Argo CD with Redis HA
+# install managed Argo CD with Redis HA and fast demo reconciliation
 az k8s-extension create -g $group -c $cluster -t managedClusters `
 	-n argocd `
 	--extension-type Microsoft.ArgoCD `
-	--config "redis-ha.enabled=true"
+	--config "redis-ha.enabled=true" `
+	--config "configs.cm.timeout\.reconciliation=10s" `
+	--config "configs.cm.timeout\.reconciliation\.jitter=0s"
 
 # deploy the sample web workload through managed Argo CD
 kubectl apply -f ./application.yaml
