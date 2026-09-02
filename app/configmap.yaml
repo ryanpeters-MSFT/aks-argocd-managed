@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-content
+data:
+  index.html: |
+    <!doctype html>
+    <html>
+      <body><h1>AKS with managed Argo CD</h1></body>
+    </html>
