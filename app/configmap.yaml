@@ -6,5 +6,5 @@ data:
   index.html: |
     <!doctype html>
     <html>
-      <body><h1>AKS with managed Argo CD</h1></body>
+      <body><h1>AKS with managed Argo CD. Hello world!</h1></body>
     </html>
